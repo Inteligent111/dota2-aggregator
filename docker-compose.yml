@@ -1,12 +1,16 @@
 services:
   web:
     build: .
-    ports:
-      - "8000:8000"
+    network_mode: host
     depends_on:
       - redis
 
   redis:
     image: redis:alpine
-    ports:
-      - "6379:6379"
+    network_mode: host
+    command: redis-server --protected-mode no
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
